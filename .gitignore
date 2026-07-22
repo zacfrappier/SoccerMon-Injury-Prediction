@@ -1,0 +1,88 @@
+# ==========================
+# Python
+# ==========================
+
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# ==========================
+# Jupyter
+# ==========================
+
+.ipynb_checkpoints/
+
+# ==========================
+# Data (large datasets)
+# ==========================
+
+data/raw/
+data/processed/
+
+# ==========================
+# Trained models
+# ==========================
+
+models/
+*.pt
+*.pth
+*.pkl
+*.joblib
+*.h5
+*.keras
+*.onnx
+
+# ==========================
+# Results (optional)
+# ==========================
+
+results/
+
+# If you want to keep results/, remove the line above
+# and instead ignore only generated files:
+# results/*.png
+# results/*.pdf
+# results/*.csv
+
+# ==========================
+# Logs
+# ==========================
+
+*.log
+
+# ==========================
+# Operating System
+# ==========================
+
+.DS_Store
+Thumbs.db
+
+# ==========================
+# VS Code
+# ==========================
+
+.vscode/
+
+# ==========================
+# PyCharm
+# ==========================
+
+.idea/
+
+# ==========================
+# Environment variables
+# ==========================
+
+.env
+
+# ==========================
+# Temporary files
+# ==========================
+
+*.tmp
+*.bak
