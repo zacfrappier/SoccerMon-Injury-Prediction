@@ -58,7 +58,7 @@ pip install -r requirements.txt
 Project initialization
 
 - [x] Repository created
-- [ ] Import SoccerMon dataset
+- [x] Import SoccerMon dataset
 - [ ] Exploratory data analysis
 - [ ] Feature engineering
 - [ ] Baseline models
