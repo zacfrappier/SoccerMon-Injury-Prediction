@@ -353,7 +353,7 @@ ax.boxplot(
         team_a_rows,
         team_b_rows,
     ],
-    labels=[
+    tick_labels=[
         "Team A",
         "Team B",
     ],
@@ -480,7 +480,7 @@ fig, ax = plt.subplots(
 
 ax.boxplot(
     year_groups,
-    labels=year_labels,
+    tick_labels=year_labels,
 )
 
 ax.set_title(
