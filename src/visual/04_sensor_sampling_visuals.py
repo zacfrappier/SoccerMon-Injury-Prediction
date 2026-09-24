@@ -128,6 +128,7 @@ rows_per_timestamp_col = find_column(
 timestamp_frequency_col = find_column(
     file_audit,
     [
+        "unique_timestamps_per_second",
         "timestamp_frequency_hz",
         "unique_timestamp_frequency_hz",
         "timestamp_rate_hz",
@@ -138,6 +139,7 @@ timestamp_frequency_col = find_column(
 row_frequency_col = find_column(
     file_audit,
     [
+        "estimated_rows_per_second",
         "effective_row_frequency_hz",
         "row_frequency_hz",
         "rows_per_second",
@@ -163,6 +165,7 @@ sensor_name_col = find_column(
 variation_fraction_col = find_column(
     column_variation,
     [
+        "varying_group_fraction",
         "variation_fraction",
         "fraction_groups_with_variation",
         "varying_fraction",
