@@ -194,10 +194,53 @@ def load_mismatches() -> pd.DataFrame:
         MISMATCH_FILE
     )
 
-    frame["date"] = pd.to_datetime(
-        frame["date"],
+    # --------------------------------------------------------
+    # Detect the reconstructed/session date column.
+    #
+    # Audit 11 merged reconstructed and provided date fields,
+    # so pandas may name the reconstructed date
+    # "date_reconstructed" rather than simply "date".
+    # --------------------------------------------------------
+
+    date_candidates = [
+        "date_reconstructed",
+        "date",
+        "comparison_date",
+    ]
+
+    date_column = next(
+        (
+            column
+            for column in date_candidates
+            if column in frame.columns
+        ),
+        None,
+    )
+
+    if date_column is None:
+
+        raise ValueError(
+            "Could not identify reconstructed date column. "
+            f"Available columns: {list(frame.columns)}"
+        )
+
+    frame[date_column] = pd.to_datetime(
+        frame[date_column],
         errors="coerce",
     )
+
+    # Use one standardized name throughout Audit 18.
+    if date_column != "date":
+
+        frame = frame.rename(
+            columns={
+                date_column: "date"
+            }
+        )
+
+    # --------------------------------------------------------
+    # Convert match flag
+    # --------------------------------------------------------
 
     frame["matches"] = (
         frame["matches"]
@@ -211,6 +254,10 @@ def load_mismatches() -> pd.DataFrame:
         )
     )
 
+    # --------------------------------------------------------
+    # Numeric fields
+    # --------------------------------------------------------
+
     for column in [
         "reconstructed_daily_load",
         "provided_daily_load",
@@ -218,15 +265,25 @@ def load_mismatches() -> pd.DataFrame:
         "absolute_difference",
     ]:
 
-        frame[column] = pd.to_numeric(
-            frame[column],
-            errors="coerce",
-        )
+        if column in frame.columns:
+
+            frame[column] = pd.to_numeric(
+                frame[column],
+                errors="coerce",
+            )
+
+    # --------------------------------------------------------
+    # Keep only the 110 mismatches
+    # --------------------------------------------------------
 
     frame = frame[
         frame["matches"] == False
     ].copy()
 
+    # Provided - reconstructed.
+    #
+    # Positive means the provided daily-load table contains
+    # more load than can be reconstructed from session.json.
     frame[
         "unaccounted_load"
     ] = (
@@ -468,6 +525,15 @@ def add_game_context(
 
     result = frame.copy()
 
+    # Normalize mismatch dates to calendar dates
+    result["date"] = (
+        pd.to_datetime(
+            result["date"],
+            errors="coerce",
+        )
+        .dt.normalize()
+    )
+
     result[
         "game_record_on_date"
     ] = False
@@ -501,6 +567,7 @@ def add_game_context(
         "date",
         "game_date",
         "match_date",
+        "timestamp",
     ]
 
     player_column = next(
@@ -538,10 +605,13 @@ def add_game_context(
 
         return result
 
-    game[date_column] = pd.to_datetime(
-        game[date_column],
-        dayfirst=True,
-        errors="coerce",
+    game[date_column] = (
+        pd.to_datetime(
+            game[date_column],
+            dayfirst=True,
+            errors="coerce",
+        )
+        .dt.normalize()
     )
 
     game_keys = set(
@@ -554,6 +624,7 @@ def add_game_context(
             ],
         )
     )
+
 
     result[
         "game_record_on_date"
