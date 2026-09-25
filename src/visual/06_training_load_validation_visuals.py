@@ -17,9 +17,9 @@ AUDIT_DIR = (
     / "audit"
 )
 
-VALIDATION_FILE = (
+ALIGNMENT_DETAIL_FILE = (
     AUDIT_DIR
-    / "daily_load_validation.csv"
+    / "daily_load_alignment_same_date.csv"
 )
 
 MISMATCH_FILE = (
@@ -62,7 +62,7 @@ TABLE_DIR.mkdir(
 # ============================================================
 
 for path in [
-    VALIDATION_FILE,
+    ALIGNMENT_DETAIL_FILE,
     MISMATCH_FILE,
 ]:
 
@@ -73,43 +73,14 @@ for path in [
         )
 
 
-validation = pd.read_csv(
-    VALIDATION_FILE
+comparison = pd.read_csv(
+    ALIGNMENT_DETAIL_FILE
 )
 
 mismatches = pd.read_csv(
     MISMATCH_FILE
 )
 
-
-# ============================================================
-# Clean validation data
-# ============================================================
-
-numeric_columns = [
-    "raw_srpe_sum",
-    "deduplicated_srpe_sum",
-    "provided_daily_load",
-    "raw_difference",
-    "deduplicated_difference",
-]
-
-for column in numeric_columns:
-
-    if column in validation.columns:
-
-        validation[column] = pd.to_numeric(
-            validation[column],
-            errors="coerce",
-        )
-
-
-if "date" in validation.columns:
-
-    validation["date"] = pd.to_datetime(
-        validation["date"],
-        errors="coerce",
-    )
 
 
 # ============================================================
@@ -139,52 +110,119 @@ if "date" in mismatches.columns:
         errors="coerce",
     )
 
+# ============================================================
+# Clean corrected Audit 11 comparison
+# ============================================================
+
+for column in [
+    "reconstructed_daily_load",
+    "provided_daily_load",
+    "difference",
+    "absolute_difference",
+]:
+
+    if column in comparison.columns:
+
+        comparison[column] = pd.to_numeric(
+            comparison[column],
+            errors="coerce",
+        )
+
+
+if "matches" in comparison.columns:
+
+    comparison["matches"] = (
+        comparison["matches"]
+        .astype(str)
+        .str.lower()
+        .map(
+            {
+                "true": True,
+                "false": False,
+            }
+        )
+    )
 
 # ============================================================
 # FIGURE 1
 # Provided vs reconstructed daily load
+# Correct same-date Audit 11 comparison
 # ============================================================
 
-comparison = validation.dropna(
+plot_data = comparison.dropna(
     subset=[
-        "raw_srpe_sum",
+        "reconstructed_daily_load",
         "provided_daily_load",
     ]
 ).copy()
+
+
+exact = plot_data[
+    plot_data["matches"] == True
+]
+
+not_exact = plot_data[
+    plot_data["matches"] == False
+]
 
 
 fig, ax = plt.subplots(
     figsize=(8, 8)
 )
 
+
+# Exact matches
 ax.scatter(
-    comparison[
-        "raw_srpe_sum"
+    exact[
+        "reconstructed_daily_load"
     ],
-    comparison[
+    exact[
         "provided_daily_load"
     ],
-    alpha=0.35,
-    s=15,
+    alpha=0.18,
+    s=12,
+    label=(
+        f"Exact matches "
+        f"(n={len(exact):,})"
+    ),
 )
 
+
+# Mismatches
+ax.scatter(
+    not_exact[
+        "reconstructed_daily_load"
+    ],
+    not_exact[
+        "provided_daily_load"
+    ],
+    alpha=0.80,
+    s=30,
+    label=(
+        f"Mismatches "
+        f"(n={len(not_exact):,})"
+    ),
+)
+
+
 minimum = min(
-    comparison[
-        "raw_srpe_sum"
+    plot_data[
+        "reconstructed_daily_load"
     ].min(),
-    comparison[
+    plot_data[
         "provided_daily_load"
     ].min(),
 )
 
 maximum = max(
-    comparison[
-        "raw_srpe_sum"
+    plot_data[
+        "reconstructed_daily_load"
     ].max(),
-    comparison[
+    plot_data[
         "provided_daily_load"
     ].max(),
 )
+
 
 ax.plot(
     [
@@ -199,13 +237,14 @@ ax.plot(
     label="Perfect agreement",
 )
 
+
 ax.set_title(
     "Provided vs Reconstructed Daily Training Load"
 )
 
 ax.set_xlabel(
     "Reconstructed Daily Load "
-    "(sum of session sRPE)"
+    "(Sum of Session sRPE)"
 )
 
 ax.set_ylabel(
@@ -547,13 +586,15 @@ total_compared = len(
     comparison
 )
 
-exact_matches = (
+exact_matches = int(
     comparison[
-        "raw_difference"
-    ]
-    .fillna(float("inf"))
-    .eq(0)
-    .sum()
+        "matches"
+    ].sum()
+)
+
+mismatch_count = (
+    total_compared
+    - exact_matches
 )
 
 match_percentage = (
@@ -571,6 +612,7 @@ print(
 )
 
 print()
+
 print(
     f"Player-days compared: "
     f"{total_compared:,}"
@@ -588,7 +630,7 @@ print(
 
 print(
     f"Mismatched player-days: "
-    f"{len(mismatches):,}"
+    f"{mismatch_count:,}"
 )
 
 print(
