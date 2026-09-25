@@ -171,6 +171,7 @@ objective_col = find_column(
 subjective_col = find_column(
     df,
     [
+        "in_subjective_wide",
         "in_subjective",
         "subjective",
         "has_subjective",
