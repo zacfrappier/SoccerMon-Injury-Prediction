@@ -547,6 +547,8 @@ cat data/processed/audit/injury_objective_coverage.csv
 cat data/processed/audit/injury_objective_alignment.csv
 ```
 
+**How the code works:** Compares injury and candidate-episode dates with each player's objective-data start and end dates, then summarizes coverage by player, injury, and episode.
+
 **Findings:**
 1. All 15 injured players are represented in the objective dataset.
 2. Only 57/162 raw injury rows occur within the corresponding player's objective-data period.
@@ -571,6 +573,8 @@ cat data/processed/audit/daily_load_unaccounted_load.csv
 cat data/processed/audit/daily_load_nearby_matches.csv
 cat data/processed/audit/daily_load_objective_overlap.csv
 ```
+
+**How the code works:** Calculates the difference between supplied and reconstructed daily load, searches nearby `session.json` dates for possible missing sessions, and checks overlap with objective recordings and game-performance records.
 
 **Findings:**
 1. All 110 mismatches have supplied load greater than reconstructed load.
@@ -598,6 +602,8 @@ cat data/processed/audit/daily_load_offset_match_summary.csv
 cat data/processed/audit/daily_load_offset_matches_by_player.csv
 cat data/processed/audit/daily_load_offset_match_details.csv
 ```
+
+**How the code works:** Searches nearby player-days for reconstructed loads that equal the unaccounted supplied load and records the direction, size, and player distribution of each date offset.
 
 **Findings:**
 1. Only 26/110 mismatches have a nearby-load match.
@@ -677,6 +683,7 @@ python3.10 src/visual/01_dataset_structure_visuals.py
 ls results/figures/dataset_structure/
 ls results/tables/dataset_structure/
 ```
+**How the code works:** Reads the audit manifest and groups objective files by team, year, date, player, and file-level structure before generating summary figures and tables.
 
 **Findings:** The objective data is a large, heterogeneous multimodal collection organized across teams, years, dates, players, and sensor files.
 
@@ -694,6 +701,7 @@ python3.10 src/visual/02_player_coverage_visuals.py
 ls results/figures/player_coverage/
 ls results/tables/player_coverage/
 ```
+**How the code works:** Groups the objective file inventory by player and team, calculates session-file counts and date spans, and plots the resulting coverage distributions.
 
 **Findings:** Objective recording volume is uneven across players, with session-file counts ranging from 1 to 365.
 
@@ -711,6 +719,7 @@ python3.10 src/visual/03_objective_qaulity_visuals.py
 ls results/figures/objective_quality/
 ls results/tables/objective_quality/
 ```
+**How the code works:** Reads objective file-level summaries, organizes row counts and file sizes by team and year, and writes comparison plots and CSV tables.
 
 **Findings:** Row-count, file-size, team, and year distributions show consistent broad structure but variable recording volume.
 
@@ -728,6 +737,7 @@ python3.10 src/visual/04_sensor_sampling_visuals.py
 ls results/figures/sensor_sampling/
 ls results/tables/sensor_sampling/
 ```
+**How the code works:** Samples objective Parquet files, parses timestamps, calculates repeated-timestamp and neighboring-time differences, and summarizes variation in GPS, heart-rate, accelerometer, and gyroscope columns.
 
 **Findings:** Files contain approximately 10 rows per timestamp, approximately 10 timestamps per second, and approximately 100 rows per second overall. GPS/heart-rate values repeat while IMU values vary within timestamp groups.
 
@@ -745,6 +755,7 @@ python3.10 src/visual/05_subjective_data_visuals.py
 ls results/figures/subjective_data/
 ls results/tables/subjective_data/
 ```
+**How the code works:** Reads the subjective inventory and structure outputs, reshapes wide player columns into summary views, and plots table coverage, value distributions, and missingness.
 
 **Findings:** Subjective tables use wide player-column layouts, and wellness data has substantial player-dependent missingness.
 
@@ -762,6 +773,7 @@ python3.10 src/visual/06_training_load_validation_visuals.py
 ls results/figures/training_load_validation/
 ls results/tables/training_load_validation/
 ```
+**How the code works:** Loads the supplied-versus-reconstructed daily-load comparison, summarizes exact matches and differences, and visualizes agreement and the remaining mismatch population.
 
 **Findings:** Reconstructed daily load agrees with the supplied table for 14,087/14,197 player-days, a 99.23% exact-match rate, while 110 localized mismatches remain.
 
@@ -779,6 +791,7 @@ python3.10 src/visual/07_player_overlap_visuals.py
 ls results/figures/player_overlap/
 ls results/tables/player_overlap/
 ```
+**How the code works:** Reads the player-membership audit, counts players present in each source and overlap category, and generates source-membership and core-population views.
 
 **Findings:** There are 78 unique IDs across sources, 75 objective players, 50 subjective/session players, and 47 players in the objective-plus-subjective core population.
 
@@ -796,6 +809,7 @@ python3.10 src/visual/08_injury_structure_visuals.py
 ls results/figures/injury_structure/
 ls results/tables/injury_structure/
 ```
+**How the code works:** Reads injury-player, candidate-episode, body-region, gap-sensitivity, and objective-alignment tables, then produces plots of injury burden, episode counts, regions, grouping sensitivity, and monitoring overlap.
 
 **Findings:** The views show player burden, candidate episodes, body-region patterns, gap sensitivity, and limited objective alignment. The exploratory seven-day grouping produces 108 candidate episodes, but the count changes with the gap rule.
 
@@ -813,6 +827,7 @@ python3.10 src/visual/09_calendar_missingness_visuals.py
 ls results/figures/calendar_missingness/
 ls results/tables/calendar_missingness/
 ```
+**How the code works:** Converts missing subjective values into player-date records, groups consecutive missing dates into streaks, aggregates missingness by player and month, and generates calendar heatmaps and streak distributions.
 
 **Findings:** The visual audit processed 136,891 missing-value rows, 19,619 unique missing player-days, and 2,441 missingness streaks. The median streak is one day, the longest is 607 days, and the maximum player total is 708 missing days.
 
