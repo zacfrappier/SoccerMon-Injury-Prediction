@@ -532,6 +532,81 @@ head -n 30 data/processed/audit/injury_candidate_episodes_7d.csv
 
 ---
 
+## Script 17: `17_injury_objective_coverage_audit.py`
+
+**Purpose:** Measure how injury records and candidate episodes overlap each player's objective monitoring period.
+
+**Run:**
+```bash
+python3.10 src/audit/17_injury_objective_coverage_audit.py
+```
+
+**Inspect:**
+```bash
+cat data/processed/audit/injury_objective_coverage.csv
+cat data/processed/audit/injury_objective_alignment.csv
+```
+
+**Findings:**
+1. All 15 injured players are represented in the objective dataset.
+2. Only 57/162 raw injury rows occur within the corresponding player's objective-data period.
+3. Only 26/162 raw injury rows have objective recording on the exact injury date.
+4. Many injury records occur before objective monitoring begins.
+
+**Why it matters:** Models cannot assume every injury label has contemporaneous sensor data. Pre-objective injuries remain useful as history, but objective features must be aligned to periods with actual monitoring.
+
+## Script 18: `18_daily_load_unaccounted_load_audit.py`
+
+**Purpose:** Investigate the 110 player-days where supplied daily load exceeds independently reconstructed daily load.
+
+**Run:**
+```bash
+python3.10 src/audit/18_daily_load_unaccounted_load_audit.py
+```
+
+**Inspect:**
+```bash
+cat data/processed/audit/daily_load_unaccounted_summary.txt
+cat data/processed/audit/daily_load_unaccounted_load.csv
+cat data/processed/audit/daily_load_nearby_matches.csv
+cat data/processed/audit/daily_load_objective_overlap.csv
+```
+
+**Findings:**
+1. All 110 mismatches have supplied load greater than reconstructed load.
+2. Median unaccounted load is 420; mean is 494.09; maximum is 1,800.
+3. Twenty-six mismatches have a nearby-load match.
+4. Fifty-four overlap an objective-data recording period.
+5. Zero overlap a game-performance record.
+6. The unexplained load is concentrated in three TeamA players.
+
+**Why it matters:** The released `session.json` does not fully explain every supplied daily-load value. Supplied workload should remain a baseline, while reconstructed workload remains an independent alternative.
+
+## Script 19: `19_daily_load_offset_pattern_audit.py`
+
+**Purpose:** Test whether the remaining daily-load mismatches can be explained by a consistent date offset.
+
+**Run:**
+```bash
+python3.10 src/audit/19_daily_load_offset_pattern_audit.py
+```
+
+**Inspect:**
+```bash
+cat data/processed/audit/daily_load_offset_pattern_summary.txt
+cat data/processed/audit/daily_load_offset_match_summary.csv
+cat data/processed/audit/daily_load_offset_matches_by_player.csv
+cat data/processed/audit/daily_load_offset_match_details.csv
+```
+
+**Findings:**
+1. Only 26/110 mismatches have a nearby-load match.
+2. Offsets are −7: 5, −2: 4, −1: 3, +1: 8, +2: 1, and +7: 9.
+3. Eighty-four mismatches have no nearby match.
+4. No dominant date-shift pattern exists.
+
+**Why it matters:** A global date correction would not resolve the discrepancies. Same-date aggregation remains appropriate, with supplied and reconstructed workload pipelines kept separate.
+
 # Current Modeling Design
 
 ## Pipeline A — Provided workload variables
@@ -586,6 +661,163 @@ This enables a direct comparison between models based on the supplied SoccerMon 
 
 ---
 
+## Visual Audit Scripts
+
+The visual scripts create diagnostic figures and supporting tables from the audit outputs.
+
+## Visual 01: Dataset structure
+
+**Run:**
+```bash
+python3.10 src/visual/01_dataset_structure_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/dataset_structure/
+ls results/tables/dataset_structure/
+```
+
+**Findings:** The objective data is a large, heterogeneous multimodal collection organized across teams, years, dates, players, and sensor files.
+
+**Why it matters:** The project needs manifest-based inventory and staged processing instead of loading the entire raw dataset into memory.
+
+## Visual 02: Player coverage
+
+**Run:**
+```bash
+python3.10 src/visual/02_player_coverage_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/player_coverage/
+ls results/tables/player_coverage/
+```
+
+**Findings:** Objective recording volume is uneven across players, with session-file counts ranging from 1 to 365.
+
+**Why it matters:** Coverage must be considered when selecting modeling populations and interpreting player-level results.
+
+## Visual 03: Objective data quality
+
+**Run:**
+```bash
+python3.10 src/visual/03_objective_qaulity_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/objective_quality/
+ls results/tables/objective_quality/
+```
+
+**Findings:** Row-count, file-size, team, and year distributions show consistent broad structure but variable recording volume.
+
+**Why it matters:** File-level variation affects sampling, memory planning, quality checks, and interpretation of sensor coverage.
+
+## Visual 04: Sensor sampling
+
+**Run:**
+```bash
+python3.10 src/visual/04_sensor_sampling_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/sensor_sampling/
+ls results/tables/sensor_sampling/
+```
+
+**Findings:** Files contain approximately 10 rows per timestamp, approximately 10 timestamps per second, and approximately 100 rows per second overall. GPS/heart-rate values repeat while IMU values vary within timestamp groups.
+
+**Why it matters:** Row counts cannot be treated as independent one-hertz observations; sensor-specific aggregation is required.
+
+## Visual 05: Subjective data
+
+**Run:**
+```bash
+python3.10 src/visual/05_subjective_data_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/subjective_data/
+ls results/tables/subjective_data/
+```
+
+**Findings:** Subjective tables use wide player-column layouts, and wellness data has substantial player-dependent missingness.
+
+**Why it matters:** Subjective data must be reshaped into player-day records, with missingness retained as a measurable characteristic.
+
+## Visual 06: Training-load validation
+
+**Run:**
+```bash
+python3.10 src/visual/06_training_load_validation_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/training_load_validation/
+ls results/tables/training_load_validation/
+```
+
+**Findings:** Reconstructed daily load agrees with the supplied table for 14,087/14,197 player-days, a 99.23% exact-match rate, while 110 localized mismatches remain.
+
+**Why it matters:** Reconstruction is strongly validated, but the remaining mismatches justify maintaining both workload pipelines.
+
+## Visual 07: Player overlap
+
+**Run:**
+```bash
+python3.10 src/visual/07_player_overlap_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/player_overlap/
+ls results/tables/player_overlap/
+```
+
+**Findings:** There are 78 unique IDs across sources, 75 objective players, 50 subjective/session players, and 47 players in the objective-plus-subjective core population.
+
+**Why it matters:** The 47-player overlap is the natural combined-model cohort; objective-only players may support a separate objective-only analysis.
+
+## Visual 08: Injury structure
+
+**Run:**
+```bash
+python3.10 src/visual/08_injury_structure_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/injury_structure/
+ls results/tables/injury_structure/
+```
+
+**Findings:** The views show player burden, candidate episodes, body-region patterns, gap sensitivity, and limited objective alignment. The exploratory seven-day grouping produces 108 candidate episodes, but the count changes with the gap rule.
+
+**Why it matters:** Injury labels require episode/onset decisions and cannot be created by treating every raw injury row as an independent event.
+
+## Visual 09: Calendar and temporal missingness
+
+**Run:**
+```bash
+python3.10 src/visual/09_calendar_missingness_visuals.py
+```
+
+**Inspect:**
+```bash
+ls results/figures/calendar_missingness/
+ls results/tables/calendar_missingness/
+```
+
+**Findings:** The visual audit processed 136,891 missing-value rows, 19,619 unique missing player-days, and 2,441 missingness streaks. The median streak is one day, the longest is 607 days, and the maximum player total is 708 missing days.
+
+**Why it matters:** Missingness is structured across players and calendar periods. It should be summarized and checked for leakage rather than treated as random noise.
+
 # Quick Audit Index
 
 | Script | Question answered |
@@ -606,6 +838,23 @@ This enables a direct comparison between models based on the supplied SoccerMon 
 | 14 | Which player IDs overlap across sources? |
 | 15 | What do raw injury records represent structurally? |
 | 16 | How sensitive are candidate injury episodes to grouping rules? |
+| 17 | How much do injury records overlap objective monitoring periods? |
+| 18 | What supplied daily-load values are not explained by reconstructed sessions? |
+| 19 | Can remaining load mismatches be explained by nearby date offsets? |
+
+## Visual Index
+
+| Visual | Question answered |
+|---|---|
+| 01 | What does the objective dataset structure look like? |
+| 02 | How evenly is objective coverage distributed across players? |
+| 03 | How do objective file size and row-count distributions vary? |
+| 04 | What are the effective sensor sampling and timestamp patterns? |
+| 05 | What do subjective-data coverage and missingness look like? |
+| 06 | How closely do reconstructed and supplied workloads agree? |
+| 07 | Which players overlap across data sources? |
+| 08 | What is the structure and sensitivity of injury episodes? |
+| 09 | Where and how long does calendar-based missingness occur? |
 
 ---
 
