@@ -841,7 +841,20 @@ Phase 1 is complete when:
 [x] Evaluation metric documented
 [x] Known dataset limitation documented
 
-[ ] Authors' implementation inspected
+[x] Authors' public repository inspected
+    - Repository exists at:
+      https://github.com/simulamet-host/soccermon-deephit
+    - As inspected in September 2026, the repository contains only:
+      - README.md
+      - LICENSE
+    - No model implementation, preprocessing scripts, notebooks,
+      configuration files, or hyperparameter definitions are publicly
+      available in the repository.
+
+[!] The following parameters could therefore not be recovered
+    from the public repository and must remain documented as
+    reconstruction choices unless another authoritative source
+    becomes available.
 [ ] Missing hyperparameters recovered
 [ ] Bespoke imputation verified
 [ ] Survival target construction verified
