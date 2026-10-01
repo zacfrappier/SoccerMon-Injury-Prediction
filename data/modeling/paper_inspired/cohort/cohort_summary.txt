@@ -1,0 +1,38 @@
+================================================================================
+SoccerMon Paper-Inspired DeepHit Cohort Summary
+================================================================================
+
+Cohort definition
+--------------------------------------------------------------------------------
+Target team: TeamB
+Require objective data: True
+Require subjective data: True
+Require session JSON: False
+
+Player counts
+--------------------------------------------------------------------------------
+Players across Audit 14: 78
+TeamB players: 38
+Initial DeepHit cohort: 22
+Cohort players with public injury history: 4
+Cohort players without public injury history: 18
+Public injury records among cohort players: 11
+
+Objective coverage
+--------------------------------------------------------------------------------
+Cohort players with >=21-day objective span: 22
+Cohort players with injury history before objective monitoring: 3
+
+Important interpretation
+--------------------------------------------------------------------------------
+Inclusion in this cohort does not yet imply that a player has a valid 21-day DeepHit history window or adequate 7-day future follow-up.
+Date-level eligibility will be determined after the canonical player-day dataset is constructed.
+Players without public injury records are intentionally retained because censored/non-event observations are required for survival analysis.
+
+Exclusions
+--------------------------------------------------------------------------------
+missing_objective: 1
+missing_subjective: 15
+not_target_team: 25
+not_target_team;missing_objective: 2
+not_target_team;missing_subjective: 13
