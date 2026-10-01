@@ -1,0 +1,8 @@
+feature,player_day_cells,present_values,missing_values,missing_fraction,used_in_initial_paper_inspired_model
+fatigue,10535,5924,4611,0.4376839107736118,True
+mood,10535,5925,4610,0.4375889890840057,True
+readiness,10535,5927,4608,0.43739914570479355,True
+sleep_duration,10535,5925,4610,0.4375889890840057,True
+sleep_quality,10535,5928,4607,0.4373042240151875,False
+soreness,10535,5928,4607,0.4373042240151875,True
+stress,10535,5926,4609,0.4374940673943996,True

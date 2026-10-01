@@ -1,0 +1,48 @@
+================================================================================
+SoccerMon Paper-Inspired Subjective Daily Summary
+================================================================================
+
+Source
+--------------------------------------------------------------------------------
+Wellness directory: /home/coder/Repos/SoccerMon-Injury-Prediction/data/raw/subjective/subjective/wellness
+Cohort file: /home/coder/Repos/SoccerMon-Injury-Prediction/data/modeling/paper_inspired/cohort/player_cohort.csv
+
+Cohort
+--------------------------------------------------------------------------------
+Selected cohort players: 22
+Players represented after active-period restriction: 22
+
+Daily table
+--------------------------------------------------------------------------------
+Player-day rows: 10,535
+Overall date range: 2020-01-09 to 2021-11-16
+Days with at least one wellness value: 5,931
+Days with complete wellness data: 5,898
+Days with partial wellness data: 33
+Days with no wellness values inside active period: 4,604
+
+Player-level wellness coverage
+--------------------------------------------------------------------------------
+Minimum any-wellness coverage: 0.1175
+Median any-wellness coverage: 0.5977
+Mean any-wellness coverage: 0.5748
+Maximum any-wellness coverage: 0.9903
+Median complete-wellness coverage: 0.5977
+
+Feature-level missingness within active periods
+--------------------------------------------------------------------------------
+fatigue: 4,611 missing / 10,535 (0.4377)
+mood: 4,610 missing / 10,535 (0.4376)
+readiness: 4,608 missing / 10,535 (0.4374)
+sleep_duration: 4,610 missing / 10,535 (0.4376)
+sleep_quality: 4,607 missing / 10,535 (0.4373)
+soreness: 4,607 missing / 10,535 (0.4373)
+stress: 4,609 missing / 10,535 (0.4375)
+
+Important interpretation
+--------------------------------------------------------------------------------
+No wellness values are imputed in this script.
+The subjective active period is defined as the interval from a player's first date with at least one observed wellness value through their last such date.
+Dates before the first observed wellness response and after the last observed wellness response are excluded from within-player missingness calculations.
+This active-period definition is a documented reconstruction choice for the paper-inspired model.
+sleep_quality is preserved in the source-level table but is not currently part of the initial paper-inspired wellness feature set.
