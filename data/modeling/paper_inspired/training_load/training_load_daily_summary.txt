@@ -1,0 +1,28 @@
+================================================================================
+SoccerMon Paper-Inspired Training-Load Daily Summary
+================================================================================
+
+Cohort
+--------------------------------------------------------------------------------
+Selected cohort players: 22
+Players with session records: 22
+
+Sessions
+--------------------------------------------------------------------------------
+Session records: 5,187
+Player-days with sessions: 4,573
+Player-days with multiple sessions: 589
+Maximum sessions on one player-day: 4
+Date range: 2020-01-09 to 2021-12-27
+
+sRPE validation
+--------------------------------------------------------------------------------
+sRPE records matching RPE * duration: 5,187
+sRPE records not matching RPE * duration: 0
+
+Important interpretation
+--------------------------------------------------------------------------------
+Multiple sessions occurring on the same player-day are preserved in the cleaned session table and aggregated into one daily record.
+Daily sRPE is represented here as the sum of session-level sRPE values for that player-day.
+No ATL, CTL, ACWR, monotony, strain, rolling workload, imputation, scaling, or survival targets are created here.
+Those transformations belong to later feature-engineering and modeling phases.
