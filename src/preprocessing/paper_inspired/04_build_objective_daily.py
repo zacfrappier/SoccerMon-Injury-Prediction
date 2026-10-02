@@ -1738,6 +1738,7 @@ def main() -> None:
         )
     )
 
+  
     sessions = (
         add_player_names(
             sessions,

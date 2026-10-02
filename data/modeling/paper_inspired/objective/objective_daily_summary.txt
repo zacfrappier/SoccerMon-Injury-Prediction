@@ -1,0 +1,40 @@
+================================================================================
+SoccerMon Paper-Inspired Objective Daily Summary
+================================================================================
+
+Cohort
+--------------------------------------------------------------------------------
+Selected cohort players: 22
+Players represented after QA: 22
+
+Objective files
+--------------------------------------------------------------------------------
+Files selected: 3,528
+Files processed: 3,528
+Processing errors: 0
+
+Paper-inspired QA
+--------------------------------------------------------------------------------
+Sessions passing QA: 3,500
+Sessions failing QA: 28
+Max-speed exclusions: 23
+Duration exclusions: 10
+Distance exclusions: 3
+
+Daily objective table
+--------------------------------------------------------------------------------
+Player-days with objective data: 3,435
+Player-days containing >1 objective file: 65
+
+Reconstruction assumptions
+--------------------------------------------------------------------------------
+1. SoccerMon speed is interpreted as metres per second.
+2. Repeated GPS/speed rows are collapsed to one observation per unique timestamp.
+3. Timestamp intervals longer than 1.0 second are excluded from distance and zone-time integration.
+4. Speed zones use reconstruction thresholds:
+   low < 3.33 m/s
+   medium 3.33-4.44 m/s
+   high >4.44-5.55 m/s
+   sprint >5.55 m/s
+5. Heart rate is not used in the initial paper-inspired objective feature set.
+6. Accelerometer and gyroscope signals are intentionally reserved for later improved-model experiments.
