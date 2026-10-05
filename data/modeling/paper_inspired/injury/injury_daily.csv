@@ -1,0 +1,7 @@
+player_name,team,date,injury_event,injury_episode_count,minor_episode_count,major_episode_count,unique_body_regions,body_regions
+TeamB-4405bb1f-56f7-48ba-bfa8-e795e4006952,TeamB,2020-01-26,1,1,1,0,1,left_thigh
+TeamB-4405bb1f-56f7-48ba-bfa8-e795e4006952,TeamB,2020-01-28,1,1,1,0,1,groin_hip
+TeamB-4405bb1f-56f7-48ba-bfa8-e795e4006952,TeamB,2020-02-07,1,1,1,0,1,stomach_back
+TeamB-7ab47f4e-6eca-4793-880f-6a0dad3459c3,TeamB,2021-10-05,1,2,2,0,2,left_knee;right_foot
+TeamB-afc13e53-2c77-48cb-8a78-743663bbb84f,TeamB,2020-01-26,1,1,1,0,1,right_foot
+TeamB-e4321aef-964a-4fdd-88bd-0bd548b0e93b,TeamB,2020-01-14,1,1,1,0,1,left_foot

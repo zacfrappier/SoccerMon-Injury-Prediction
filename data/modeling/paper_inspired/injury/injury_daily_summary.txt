@@ -1,0 +1,21 @@
+================================================================================
+SoccerMon Paper-Inspired Injury Daily Summary
+================================================================================
+
+Cohort
+--------------------------------------------------------------------------------
+Selected cohort players: 22
+Players with candidate injury episodes: 4
+
+Injury episodes
+--------------------------------------------------------------------------------
+Candidate episodes: 7
+Minor episodes: 7
+Major episodes: 0
+Unique injury-event days: 6
+
+Interpretation
+--------------------------------------------------------------------------------
+Injury events are defined using the start date of candidate episodes created with the previously audited 7-day episode-gap rule.
+Repeated observations belonging to the same candidate episode are therefore not treated as separate new injuries.
+Players without injury episodes remain in the cohort and will later contribute censored observations to the survival model.
