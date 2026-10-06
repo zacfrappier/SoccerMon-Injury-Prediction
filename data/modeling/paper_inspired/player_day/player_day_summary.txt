@@ -1,0 +1,35 @@
+================================================================================
+SoccerMon Paper-Inspired Player-Day Summary
+================================================================================
+
+Cohort
+--------------------------------------------------------------------------------
+Selected players: 22
+Player-day rows: 11,112
+
+Modality availability
+--------------------------------------------------------------------------------
+Days with subjective data: 5,931
+Days with training data: 4,573
+Days with objective data: 3,435
+Days with all three modalities: 2,133
+Days with any model data: 7,097
+
+Available modality count
+--------------------------------------------------------------------------------
+0 modalities: 4,015
+1 modality: 2,388
+2 modalities: 2,576
+3 modalities: 2,133
+
+Injury events
+--------------------------------------------------------------------------------
+Injury-event days: 6
+
+Interpretation
+--------------------------------------------------------------------------------
+The merged table preserves missing modality values without imputation.
+Absence of a training record is not automatically interpreted as zero training load.
+Absence of an objective record is not automatically interpreted as zero objective exposure.
+Injury-event days are retained even when one or more predictor modalities are absent.
+The next audit will determine which player-days can support valid temporal histories for the DeepHit model.
