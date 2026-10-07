@@ -1,0 +1,34 @@
+================================================================================
+SoccerMon Paper-Inspired Feature Summary
+================================================================================
+
+Dataset
+--------------------------------------------------------------------------------
+Players: 22
+Player-day rows: 11,112
+
+Derived paper-inspired features
+--------------------------------------------------------------------------------
+daily_load
+atl_7d
+weekly_load_7d
+monotony_7d
+strain_7d
+ctl28
+ctl42
+acwr_7_28
+subjective_missingness_7d
+past_injury_count
+
+Reconstruction assumptions
+--------------------------------------------------------------------------------
+1. srpe_total is used as Daily Load because the paper defines daily load as the sum of session RPE values across the day.
+2. ATL is the rolling 7-day mean of Daily Load.
+3. Weekly Load is the rolling 7-day sum of Daily Load.
+4. Monotony is reconstructed as the rolling 7-day mean divided by rolling 7-day standard deviation.
+5. Strain is reconstructed as Weekly Load multiplied by Monotony.
+6. CTL28 and CTL42 are rolling sums over 28 and 42 calendar days, respectively.
+7. ACWR is reconstructed as 7-day mean load divided by 28-day mean load because the manuscript does not specify the chronic denominator.
+8. Missing training records remain missing rather than being automatically interpreted as zero-load days.
+9. Past injury count uses only injuries occurring before the current player-day to prevent leakage.
+10. No feature imputation is performed in this script.
