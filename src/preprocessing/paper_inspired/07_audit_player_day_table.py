@@ -60,6 +60,10 @@ SUMMARY_FILE = (
     / "player_day_window_audit_summary.txt"
 )
 
+THRESHOLD_SENSITIVITY_FILE = (
+    OUTPUT_DIR
+    / "window_coverage_threshold_sensitivity.csv"
+)
 
 # ============================================================
 # Reconstruction settings
@@ -67,6 +71,27 @@ SUMMARY_FILE = (
 
 HISTORY_DAYS = 21
 FOLLOWUP_DAYS = 7
+
+
+# ============================================================
+# Coverage sensitivity thresholds
+#
+# A window meets a threshold only when EACH predictor modality
+# has at least the required number of observed days somewhere
+# in the preceding 21-day history.
+#
+# ceil() is used so the threshold is never rounded downward.
+#
+# 25% of 21 = 5.25 -> 6 days
+# 50% of 21 = 10.5 -> 11 days
+# 75% of 21 = 15.75 -> 16 days
+# ============================================================
+
+COVERAGE_THRESHOLDS = {
+    "coverage_25": 0.25,
+    "coverage_50": 0.50,
+    "coverage_75": 0.75,
+}
 
 
 # ============================================================
@@ -727,6 +752,49 @@ def audit_player(
             > 0
         )
 
+        # ----------------------------------------------------
+        # Coverage-threshold sensitivity
+        #
+        # A threshold is satisfied only if EVERY modality has
+        # at least the required number of observed history days.
+        #
+        # We additionally require the window to be fully inside
+        # the observed date ranges of all three modalities.
+        #
+        # This prevents a window from passing merely because
+        # missing values occur before a modality's monitoring
+        # period began.
+        # ----------------------------------------------------
+
+        coverage_threshold_flags = {}
+
+        for (
+            threshold_name,
+            threshold_fraction,
+        ) in COVERAGE_THRESHOLDS.items():
+
+            required_days = int(
+                np.ceil(
+                    HISTORY_DAYS
+                    * threshold_fraction
+                )
+            )
+
+            coverage_threshold_flags[
+                threshold_name
+            ] = (
+                full_modality_range_eligible
+                and
+                subjective_days
+                >= required_days
+                and
+                training_days
+                >= required_days
+                and
+                objective_days
+                >= required_days
+            )
+
         rows.append(
             {
                 "player_name":
@@ -850,6 +918,22 @@ def audit_player(
 
                 "partial_multimodal_eligible":
                     partial_multimodal_eligible,
+
+                # Coverage sensitivity
+                "coverage_25_eligible":
+                    coverage_threshold_flags[
+                        "coverage_25"
+                    ],
+
+                "coverage_50_eligible":
+                    coverage_threshold_flags[
+                        "coverage_50"
+                    ],
+
+                "coverage_75_eligible":
+                    coverage_threshold_flags[
+                        "coverage_75"
+                    ],
 
                 # Outcome / future
                 "injury_within_7d":
@@ -979,6 +1063,26 @@ def build_player_summary(
                             "partial_multimodal_eligible"
                         ].sum()
                     ),
+                "coverage_25_days":
+                    int(
+                        frame[
+                "coverage_25_eligible"
+                        ].sum()
+                    ),
+
+                "coverage_50_days":
+                    int(
+                        frame[
+                            "coverage_50_eligible"
+                        ].sum()
+                    ),
+
+                "coverage_75_days":
+                    int(
+                        frame[
+                            "coverage_75_eligible"
+                        ].sum()
+                    ),
 
                 "positive_7d_windows":
                     int(
@@ -1024,6 +1128,45 @@ def build_player_summary(
                         (
                             frame[
                                 "partial_multimodal_eligible"
+                            ]
+                            &
+                            frame[
+                                "injury_within_7d"
+                            ]
+                        ).sum()
+                    ),
+
+                "coverage_25_positive_7d_windows":
+                    int(
+                        (
+                            frame[
+                                "coverage_25_eligible"
+                            ]
+                            &
+                            frame[
+                                "injury_within_7d"
+                            ]
+                        ).sum()
+                    ),
+
+                "coverage_50_positive_7d_windows":
+                    int(
+                        (
+                            frame[
+                                "coverage_50_eligible"
+                            ]
+                            &
+                            frame[
+                                "injury_within_7d"
+                            ]
+                        ).sum()
+                    ),
+
+                "coverage_75_positive_7d_windows":
+                    int(
+                        (
+                            frame[
+                                "coverage_75_eligible"
                             ]
                             &
                             frame[
@@ -1204,6 +1347,27 @@ def build_injury_event_summary(
                         ].sum()
                     ),
 
+                "coverage_25_windows":
+                    int(
+                        candidate_windows[
+                            "coverage_25_eligible"
+                        ].sum()
+                    ),
+
+                "coverage_50_windows":
+                    int(
+                        candidate_windows[
+                            "coverage_50_eligible"
+                        ].sum()
+                    ),
+
+                "coverage_75_windows":
+                    int(
+                        candidate_windows[
+                            "coverage_75_eligible"
+                        ].sum()
+                    ),
+
                 "best_subjective_days_21d":
                     (
                         candidate_windows[
@@ -1329,7 +1493,6 @@ def build_modality_summary(
 # ============================================================
 
 def main() -> None:
-
     print(
         "=" * 80
     )
@@ -1393,6 +1556,13 @@ def main() -> None:
         )
     )
 
+    threshold_sensitivity = (
+        build_threshold_sensitivity(
+            windows,
+            injury_summary,
+        )
+    )
+
     # --------------------------------------------------------
     # Save outputs
     # --------------------------------------------------------
@@ -1414,6 +1584,11 @@ def main() -> None:
 
     modality_summary.to_csv(
         MODALITY_SUMMARY_FILE,
+        index=False,
+    )
+
+    threshold_sensitivity.to_csv(
+        THRESHOLD_SENSITIVITY_FILE,
         index=False,
     )
 
@@ -1446,6 +1621,23 @@ def main() -> None:
     partial_eligible = int(
         windows[
             "partial_multimodal_eligible"
+        ].sum()
+    )
+    coverage_25_eligible = int(
+        windows[
+            "coverage_25_eligible"
+        ].sum()
+    )
+
+    coverage_50_eligible = int(
+        windows[
+            "coverage_50_eligible"
+        ].sum()
+    )
+
+    coverage_75_eligible = int(
+        windows[
+            "coverage_75_eligible"
         ].sum()
     )
 
@@ -1489,6 +1681,42 @@ def main() -> None:
         (
             windows[
                 "partial_multimodal_eligible"
+            ]
+            &
+            windows[
+                "injury_within_7d"
+            ]
+        ).sum()
+    )
+
+    coverage_25_positive = int(
+        (
+            windows[
+                "coverage_25_eligible"
+            ]
+            &
+            windows[
+                "injury_within_7d"
+            ]
+        ).sum()
+    )
+
+    coverage_50_positive = int(
+        (
+            windows[
+                "coverage_50_eligible"
+            ]
+            &
+            windows[
+                "injury_within_7d"
+            ]
+        ).sum()
+    )
+
+    coverage_75_positive = int(
+        (
+            windows[
+                "coverage_75_eligible"
             ]
             &
             windows[
@@ -1602,6 +1830,20 @@ def main() -> None:
         f"Partial multimodal windows: "
         f"{partial_eligible:,}"
     )
+    lines.append(
+        f">=25% coverage in each modality: "
+        f"{coverage_25_eligible:,}"
+    )
+
+    lines.append(
+        f">=50% coverage in each modality: "
+        f"{coverage_50_eligible:,}"
+    )
+
+    lines.append(
+        f">=75% coverage in each modality: "
+        f"{coverage_75_eligible:,}"
+    )
 
     lines.append("")
 
@@ -1631,6 +1873,21 @@ def main() -> None:
     lines.append(
         f"Partial multimodal positive windows: "
         f"{partial_positive:,}"
+    )
+
+    lines.append(
+        f">=25% coverage positive windows: "
+        f"{coverage_25_positive:,}"
+    )
+
+    lines.append(
+        f">=50% coverage positive windows: "
+        f"{coverage_50_positive:,}"
+    )
+
+    lines.append(
+        f">=75% coverage positive windows: "
+        f"{coverage_75_positive:,}"
     )
 
     lines.append("")
@@ -1692,6 +1949,21 @@ def main() -> None:
     lines.append(
         "Partial multimodal: at least one subjective, one training, and one "
         "objective observation occur somewhere within the 21-day history."
+    )
+
+    lines.append(
+        "Coverage 25%: full modality-range window with at least "
+        "6 observed days from each modality."
+    )
+
+    lines.append(
+        "Coverage 50%: full modality-range window with at least "
+        "11 observed days from each modality."
+    )
+
+    lines.append(
+        "Coverage 75%: full modality-range window with at least "
+        "16 observed days from each modality."
     )
 
     lines.append("")
@@ -1775,7 +2047,211 @@ def main() -> None:
         f"{SUMMARY_FILE}"
     )
 
+    print()
+
+    print(
+        f"Coverage-threshold sensitivity written to:\n"
+        f"{THRESHOLD_SENSITIVITY_FILE}"
+    )
+
+# ============================================================
+# Coverage threshold sensitivity
+# ============================================================
+
+def build_threshold_sensitivity(
+    windows: pd.DataFrame,
+    injury_summary: pd.DataFrame,
+) -> pd.DataFrame:
+
+    rows = []
+
+    definitions = [
+        (
+            "calendar",
+            "calendar_eligible",
+            0,
+        ),
+        (
+            "full_modality_range",
+            "full_modality_range_eligible",
+            0,
+        ),
+        (
+            "coverage_25",
+            "coverage_25_eligible",
+            int(
+                np.ceil(
+                    HISTORY_DAYS
+                    * 0.25
+                )
+            ),
+        ),
+        (
+            "coverage_50",
+            "coverage_50_eligible",
+            int(
+                np.ceil(
+                    HISTORY_DAYS
+                    * 0.50
+                )
+            ),
+        ),
+        (
+            "coverage_75",
+            "coverage_75_eligible",
+            int(
+                np.ceil(
+                    HISTORY_DAYS
+                    * 0.75
+                )
+            ),
+        ),
+        (
+            "strict_complete",
+            "strict_multimodal_eligible",
+            HISTORY_DAYS,
+        ),
+    ]
+
+    for (
+        rule_name,
+        eligibility_column,
+        required_days,
+    ) in definitions:
+
+        eligible = windows[
+            windows[
+                eligibility_column
+            ]
+        ]
+
+        positive = eligible[
+            eligible[
+                "injury_within_7d"
+            ]
+        ]
+
+        represented_players = int(
+            eligible[
+                "player_name"
+            ]
+            .nunique()
+        )
+
+        positive_players = int(
+            positive[
+                "player_name"
+            ]
+            .nunique()
+        )
+
+        # ----------------------------------------------------
+        # Determine how many unique observed injury events have
+        # at least one qualifying prediction window.
+        # ----------------------------------------------------
+
+        injury_events_supported = 0
+
+        for _, event in (
+            injury_summary.iterrows()
+        ):
+
+            player = (
+                event[
+                    "player_name"
+                ]
+            )
+
+            injury_date = pd.to_datetime(
+                event[
+                    "injury_date"
+                ]
+            )
+
+            event_windows = eligible[
+                (
+                    eligible[
+                        "player_name"
+                    ]
+                    == player
+                )
+                &
+                (
+                    eligible[
+                        "prediction_date"
+                    ]
+                    >= injury_date
+                    - pd.Timedelta(
+                        days=FOLLOWUP_DAYS
+                    )
+                )
+                &
+                (
+                    eligible[
+                        "prediction_date"
+                    ]
+                    < injury_date
+                )
+            ]
+
+            if not event_windows.empty:
+
+                injury_events_supported += 1
+
+        rows.append(
+            {
+                "eligibility_rule":
+                    rule_name,
+
+                "minimum_days_per_modality":
+                    required_days,
+
+                "minimum_fraction_per_modality":
+                    (
+                        required_days
+                        / HISTORY_DAYS
+                        if required_days
+                        else 0.0
+                    ),
+
+                "eligible_windows":
+                    len(
+                        eligible
+                    ),
+
+                "eligible_players":
+                    represented_players,
+
+                "positive_7d_windows":
+                    len(
+                        positive
+                    ),
+
+                "positive_players":
+                    positive_players,
+
+                "unique_injury_events_supported":
+                    injury_events_supported,
+
+                "positive_window_fraction":
+                    (
+                        len(
+                            positive
+                        )
+                        / len(
+                            eligible
+                        )
+                        if len(
+                            eligible
+                        )
+                        else np.nan
+                    ),
+            }
+        )
+
+    return pd.DataFrame(
+        rows
+    )
 
 if __name__ == "__main__":
-
     main()

@@ -15,6 +15,9 @@ Calendar-eligible windows: 10,494
 Strict complete multimodal windows: 0
 Full modality-range windows: 6,640
 Partial multimodal windows: 6,431
+>=25% coverage in each modality: 4,573
+>=50% coverage in each modality: 1,957
+>=75% coverage in each modality: 5
 
 7-day injury-positive windows
 --------------------------------------------------------------------------------
@@ -22,6 +25,9 @@ Calendar-eligible positive windows: 14
 Strict multimodal positive windows: 0
 Full modality-range positive windows: 7
 Partial multimodal positive windows: 0
+>=25% coverage positive windows: 0
+>=50% coverage positive windows: 0
+>=75% coverage positive windows: 0
 
 Unique injury-event support
 --------------------------------------------------------------------------------
@@ -36,6 +42,9 @@ Calendar eligible: full 21-day history, full 7-day future follow-up, and no inju
 Strict multimodal: all 21 history days contain subjective, training, and objective observations.
 Full modality range: all 21 history days fall inside the observed date ranges of all three modalities, although individual values may still be missing.
 Partial multimodal: at least one subjective, one training, and one objective observation occur somewhere within the 21-day history.
+Coverage 25%: full modality-range window with at least 6 observed days from each modality.
+Coverage 50%: full modality-range window with at least 11 observed days from each modality.
+Coverage 75%: full modality-range window with at least 16 observed days from each modality.
 
 Important interpretation
 --------------------------------------------------------------------------------

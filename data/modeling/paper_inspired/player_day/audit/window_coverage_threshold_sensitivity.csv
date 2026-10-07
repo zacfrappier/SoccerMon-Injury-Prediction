@@ -1,0 +1,7 @@
+eligibility_rule,minimum_days_per_modality,minimum_fraction_per_modality,eligible_windows,eligible_players,positive_7d_windows,positive_players,unique_injury_events_supported,positive_window_fraction
+calendar,0,0.0,10494,22,14,2,2,0.0013340956737183153
+full_modality_range,0,0.0,6640,22,7,1,1,0.0010542168674698795
+coverage_25,6,0.2857142857142857,4573,21,0,0,0,0.0
+coverage_50,11,0.5238095238095238,1957,20,0,0,0,0.0
+coverage_75,16,0.7619047619047619,5,1,0,0,0,0.0
+strict_complete,21,1.0,0,0,0,0,0,
