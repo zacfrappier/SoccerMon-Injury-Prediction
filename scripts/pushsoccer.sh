@@ -20,9 +20,11 @@ if [[ -n "$(git status --porcelain)" ]]; then
     exit 1
 fi
 
-# Push personal repository.
-echo "Pushing personal GitHub..."
-git push origin main
+# Skip personal push during dry run.
+if [[ "${1:-}" != "--dry-run" ]]; then
+    echo "Pushing personal GitHub..."
+    git push origin main
+fi
 
 # Create temporary CSUN checkout.
 TMP=$(mktemp -d)
