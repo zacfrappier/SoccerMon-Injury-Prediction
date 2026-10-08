@@ -44,9 +44,9 @@ test -d "$CSUN_FOLDER" || {
 # that are absent from the personal repository.
 # Replace only the designated project folder.
 # Refuse to overwrite unexpected research projects.
-for project in     Physical_Activity_Classification     Runner_Injury_Forecasting     Sleep_Classification     Stress_Detection     Soccer_Injury_Forecasting
+for project in Physical_Activity_Classification Runner_Injury_Forecasting Sleep_Classification Stress_Detection Soccer_Injury_Forecasting
 do
-    if git ls-files -- "$CSUN_FOLDER/$project/" | grep -q .; then
+    if git cat-file -e "HEAD:$CSUN_FOLDER/$project" 2>/dev/null; then
         echo "ERROR: Unexpected project directory: $project"
         exit 1
     fi
