@@ -52,6 +52,16 @@ do
     fi
 done
 
+# Preview synchronization without changing CSUN.
+if [[ "${1:-}" == "--dry-run" ]]; then
+    echo "DRY RUN: CSUN destination files:"
+    git ls-tree -r --name-only HEAD -- "$CSUN_FOLDER"
+    echo "DRY RUN: Personal files to synchronize:"
+    git -C "$PERSONAL" ls-tree -r --name-only HEAD
+    echo "No CSUN files were modified."
+    exit 0
+fi
+
 git rm -r --ignore-unmatch -- "$CSUN_FOLDER"
 
 mkdir -p "$CSUN_FOLDER"
