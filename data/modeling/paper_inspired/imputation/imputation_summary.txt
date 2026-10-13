@@ -1,0 +1,32 @@
+================================================================================
+SoccerMon Imputation Summary
+================================================================================
+
+Players: 22
+Player-days: 11,112
+Candidate features: 40
+
+Method comparison
+--------------------------------------------------------------------------------
+median:
+  Missing cells before: 250,001
+  Missing cells after:  0
+  Cells imputed:        250,001
+
+linear:
+  Missing cells before: 250,001
+  Missing cells after:  73,180
+  Cells imputed:        176,821
+
+bespoke:
+  Missing cells before: 250,001
+  Missing cells after:  180,269
+  Cells imputed:        69,732
+
+Interpretation
+--------------------------------------------------------------------------------
+These are exploratory full-cohort imputation outputs.
+The bespoke method is a documented reconstruction.
+Injury outcomes and presence indicators were preserved.
+No remaining NaNs were automatically filled with zero.
+Final evaluation requires fold-specific preprocessing.
