@@ -1,0 +1,20 @@
+================================================================================
+SoccerMon Imputation Validation Summary
+================================================================================
+
+Players: 22
+Rows: 11,112
+Features checked: 40
+
+ method  original_missing  newly_filled  remaining_missing  observed_values_changed  infinite_values  invalid_proportions  fraction_filled
+bespoke            250001         69732             180269                        0                0                    0         0.278927
+ linear            250001        176821              73180                        0                0                    0         0.707281
+ median            250001        250001                  0                        0                0                    0         1.000000
+
+Validation issues: 0
+
+Interpretation:
+Observed values must remain unchanged.
+Remaining missing values are reported, not filled.
+This audit does not prove imputation accuracy.
+Leakage-safe fold-specific imputation is still required.
