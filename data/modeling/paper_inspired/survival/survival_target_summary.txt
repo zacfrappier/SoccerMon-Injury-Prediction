@@ -1,0 +1,27 @@
+================================================================================
+SoccerMon Paper-Inspired Survival Summary
+================================================================================
+
+Players: 22
+Survival observations: 10,626
+Positive prediction windows: 14
+Censored prediction windows: 10,612
+Observed public injury-event days: 6
+Injuries supporting positive windows: 2
+
+Censoring reasons:
+censor_reason
+horizon_reached    10480
+calendar_end         132
+injury_observed       14
+
+Interpretation:
+History: t-21 through t-1.
+Outcome horizon: t+1 through t+7.
+The earliest injury in follow-up determines duration.
+Missing predictors are not filtered or imputed.
+Injury surveillance completeness is unverified.
+Full follow-up is based on calendar coverage only.
+No return-to-play dates are available.
+Multiple windows may refer to the same injury.
+Fold-specific imputation is still required.
