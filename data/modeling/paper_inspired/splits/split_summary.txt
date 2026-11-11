@@ -1,0 +1,38 @@
+==============================================================================
+SoccerMon Script 11A - Evaluation Split Diagnostics
+==============================================================================
+Target samples: 10,626
+Players / LOPO folds: 22
+Distinct prediction dates: 697
+Prediction date range: 2020-01-30 to 2021-12-26
+Positive prediction windows: 14
+Distinct supporting injury events: 2
+
+CHRONOLOGICAL PROTOCOL
+Requested training fraction of distinct dates: 80.0%
+Shared cutoff / first test prediction date: 2021-08-09
+Forecast horizon used for purging: 7 days
+Training: prediction date earlier than cutoff AND planned follow-up end earlier than cutoff.
+Purged: earlier prediction date but planned follow-up overlaps test period.
+Test: prediction date on or after cutoff.
+  train: 8,364 samples, 7 positive windows, 1 distinct injury events, 21 players
+  purged: 147 samples, 0 positive windows, 0 distinct injury events, 21 players
+  test: 2,115 samples, 7 positive windows, 1 distinct injury events, 22 players
+
+LEAVE-ONE-PLAYER-OUT PROTOCOL
+LOPO folds with zero observed test injury events: 20 / 22
+All available dates for the held-out player are test; all other players are training.
+
+IMPORTANT LIMITATIONS
+- Positive daily windows may correspond to the same actual injury.
+- With zero observed test events, event-based metrics such as C-index may be undefined.
+- With extremely few injuries, estimates will be unstable even when mathematically defined.
+- Public injury-event surveillance completeness has not been verified.
+- Training/test history windows may overlap in calendar time; only future *label* overlap is purged.
+- No imputation, normalization, feature selection, or model training happens here.
+- Script 11B must fit preprocessing using training data only, separately for each protocol/fold.
+- LOPO and chronological evaluations are separate; not a nested combined evaluation.
+- A held-out player's past measurements can be used for inference, but not fitting.
+
+Outputs: chronological_split.csv, lopo_folds.csv, split_diagnostics.csv,
+         positive_event_assignments.csv, split_summary.txt

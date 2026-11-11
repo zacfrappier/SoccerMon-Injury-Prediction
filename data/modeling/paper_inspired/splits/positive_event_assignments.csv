@@ -1,0 +1,3 @@
+player_name,first_future_injury_date,chronological_split,positive_prediction_windows,earliest_prediction_date,latest_prediction_date,fold_id,lopo_role_in_own_fold
+TeamB-4405bb1f-56f7-48ba-bfa8-e795e4006952,2020-02-07,train,7,2020-01-31,2020-02-06,lopo_04,test
+TeamB-7ab47f4e-6eca-4793-880f-6a0dad3459c3,2021-10-05,test,7,2021-09-28,2021-10-04,lopo_13,test
