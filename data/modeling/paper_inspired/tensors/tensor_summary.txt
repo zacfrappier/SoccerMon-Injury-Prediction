@@ -1,0 +1,14 @@
+SoccerMon Script 12 - DeepHit MLP Tensor Construction
+Input targets: 10,626; players: 22
+Executed combinations in this invocation: 69
+Total combinations present in diagnostics: 69
+Historical window: t-21..t-1; forecast t+1..t+7
+Features: 40; tensor dimensions: (samples, 21, 40); MLP flattened: 840
+Files: X_train/test.npy, duration_train/test.npy, event_train/test.npy,
+       sample_index_train/test.csv, tensor_metadata.json
+Training/test split and survival labels preserved; purged rows excluded.
+No imputation or normalization refitted; uses Script 11B scaled inputs.
+No NaNs, infs or incomplete histories allowed.
+IMPORTANT: Event counts are positive windows, not independent injuries.
+IMPORTANT: Only two distinct supporting injuries in current cohort.
+IMPORTANT: The DeepHit MLP architecture and loss are implemented later in Script 13.

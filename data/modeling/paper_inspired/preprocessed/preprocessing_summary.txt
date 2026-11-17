@@ -1,0 +1,15 @@
+SoccerMon 11B: Fold-Specific Imputation and Normalization
+Input rows: 11,112, players: 22, features: 40
+Protocol in this execution: all
+Fold-strategy combinations executed: 69
+Strategies: train-median; causal past-only linear; reconstructed teammate-relative.
+All 40 inputs scaled using training-only fitting; original missingness saved separately.
+Training fit dates: union of 21-day histories belonging to train samples.
+Chronological future test dates and LOPO held-out players excluded from fitting.
+All source features preserved; imputation replaces only missing values.
+Missingness mask is not part of the 40-feature model tensor by default.
+LIMITATION: rolling features were NOT recomputed after imputing daily values.
+LIMITATION: causal linear differs from bidirectional interpolation in Script 09.
+LIMITATION: bespoke is a documented reconstruction, not confirmed paper source code.
+LIMITATION: teammate values for a player-day assume measurements available by day end.
+LIMITATION: model evaluation with only two injuries remains statistically unstable.
